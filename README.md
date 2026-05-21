@@ -4,7 +4,7 @@
 ## 📌 Sobre o Projeto
 O **CondoSys** é um software desktop desenvolvido em Java (Orientado a Objetos) para modernizar e automatizar a gestão do Condomínio Residencial Morada Nova. O sistema substitui os antigos cadernos físicos da portaria, oferecendo um controle rigoroso de acesso de visitantes (RBAC) e um fluxo totalmente rastreável para o recebimento e entrega de encomendas.
 
-## 👨‍💻 Equipa Desenvolvedora
+## 👨‍💻 Equipe Desenvolvedora
 * **Armando Rodrigues Machado de Almeida** (3º Semestre - CCOMP) | RA: 00365413
 * **Giorge Vitor Cupertino Casagrande** (3º Semestre - CCOMP) | RA: 00361701
 * **Sara Raquel Lima Souza** (3º Semestre - IAM) | RA: E0538009
