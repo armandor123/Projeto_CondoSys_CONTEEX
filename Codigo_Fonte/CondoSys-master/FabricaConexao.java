@@ -8,8 +8,8 @@ public class FabricaConexao {
 
     // 1. As credenciais do seu Banco de Dados (Ajuste conforme o seu MySQL)
     private static final String URL = "jdbc:mysql://localhost:3306/condosys_db";
-    private static final String USUARIO = "Armando";
-    private static final String SENHA = "N15k35mjyam0"; // Coloque a sua senha do MySQL aqui!
+    private static final String USUARIO = "xxxxxxxxx";
+    private static final String SENHA = "************"; // Coloque a sua senha do MySQL aqui!
 
     // 2. O método que "fabrica" e entrega a conexão pronta
     public static Connection conectar() {
