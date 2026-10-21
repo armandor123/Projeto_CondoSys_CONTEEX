@@ -5,7 +5,7 @@ import br.com.condosys.api.domain.model.Pessoa;
 
 // JpaRepository é uma interface fornecida pelo Spring DAA JPA. ela ja possui varias operaçoes porntas para trabalhar com o banco de dados
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.List;
 //UUID É O TIPO DA CHAVE PRIMAIRA UTILIZADA PELA ENTIDADE PESSOA.
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +31,12 @@ public interface PessoaRepository
     //verfica se existe pessoa com documento informado
     boolean existsByDocumento(String documento);
 
+
+    // Verifica se outro cadastro já utiliza o documento.
+    boolean existsByDocumentoAndIdNot(String documento, UUID id);
+
+    // Lista somente pessoas ativas.
+    List<Pessoa> findAllByAtivoTrue();
 
     }
 

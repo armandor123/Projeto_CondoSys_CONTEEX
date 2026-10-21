@@ -36,15 +36,15 @@ public class PessoaService {
     }
 
 
-    // Retorna todas as pessoas cadastradas.
+    // Lista somente pessoas ativas.
     public List<Pessoa> listarTodas() {
-        return pessoaRepository.findAll();
+        return pessoaRepository.findAllByAtivoTrue();
     }
 
-
-    // Busca uma pessoa pelo documento.
-    public Optional<Pessoa> buscarPorDocumento(String documento) {
-        return pessoaRepository.findByDocumento(documento);
+    // Busca pelo documento ou informa que a pessoa não existe.
+    public Pessoa buscarPorDocumento(String documento) {
+        return pessoaRepository.findByDocumento(documento)
+                .orElseThrow(PessoaNaoEncontradaException::new);
     }
 
 
@@ -53,6 +53,46 @@ public class PessoaService {
         return pessoaRepository.findById(id)
                 .orElseThrow(PessoaNaoEncontradaException::new);
 
+    }
+
+    // Atualiza somente os dados permitidos.
+    public Pessoa atualizar(
+            UUID id,
+            String nome,
+            String documento,
+            String telefone
+    ) {
+
+        Pessoa pessoa = buscarPorId(id);
+
+        if (pessoaRepository.existsByDocumentoAndIdNot(documento, id)) {
+            throw new DocumentoJaCadastradoException();
+        }
+
+        pessoa.setNome(nome);
+        pessoa.setDocumento(documento);
+        pessoa.setTelefone(telefone);
+
+        return pessoaRepository.save(pessoa);
+    }
+    // Desativa a pessoa sem apagar o registro do banco.
+    public void desativar(UUID id) {
+
+        Pessoa pessoa = buscarPorId(id);
+
+        pessoa.desativar();
+
+        pessoaRepository.save(pessoa);
+    }
+
+    // Reativa uma pessoa desativada.
+    public Pessoa reativar(UUID id) {
+
+        Pessoa pessoa = buscarPorId(id);
+
+        pessoa.ativar();
+
+        return pessoaRepository.save(pessoa);
     }
 }
 
