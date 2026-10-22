@@ -161,4 +161,10 @@ public class Usuario {
     public void desativar() {
         this.ativo = false;
     }
+
+    // Permite validar a senha internamente.
+// O hash não será exposto pelos DTOs da API.
+    public String getSenhaHash() {
+        return senhaHash;
+    }
 }

@@ -9,6 +9,8 @@ import br.com.condosys.api.exception.UsuarioNaoEncontradoException;
 import br.com.condosys.api.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import br.com.condosys.api.exception.SenhaAtualIncorretaException;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -76,9 +78,19 @@ public class UsuarioService {
     }
 
 
-    // Lista todos os usuários.
+    // Lista somente usuários ativos.
     public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findAllByAtivoTrue();
+    }
+
+    // Reativa um usuário desativado.
+    public Usuario reativar(UUID id) {
+
+        Usuario usuario = buscarPorId(id);
+
+        usuario.ativar();
+
+        return usuarioRepository.save(usuario);
     }
 
 
@@ -86,5 +98,59 @@ public class UsuarioService {
     public Usuario buscarPorId(UUID id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(UsuarioNaoEncontradoException::new);
+    }
+
+    // Atualiza e-mail e perfil do usuário.
+    public Usuario atualizar(
+            UUID id,
+            String email,
+            PerfilUsuario perfil
+    ) {
+
+        Usuario usuario = buscarPorId(id);
+
+        if (usuarioRepository.existsByEmailAndIdNot(email, id)) {
+            throw new EmailJaCadastradoException();
+        }
+
+        usuario.alterarEmail(email);
+        usuario.alterarPerfil(perfil);
+
+        return usuarioRepository.save(usuario);
+    }
+
+    // Desativa o usuário sem apagar o registro.
+    public void desativar(UUID id) {
+
+        Usuario usuario = buscarPorId(id);
+
+        usuario.desativar();
+
+        usuarioRepository.save(usuario);
+    }
+
+    // Altera a senha após validar a senha atual.
+    public void alterarSenha(
+            UUID id,
+            String senhaAtual,
+            String novaSenha
+    ) {
+
+        Usuario usuario = buscarPorId(id);
+
+        // Compara a senha digitada com o hash armazenado.
+        if (!passwordEncoder.matches(
+                senhaAtual,
+                usuario.getSenhaHash()
+        )) {
+            throw new SenhaAtualIncorretaException();
+        }
+
+        // Gera um novo hash para a nova senha.
+        String novoHash = passwordEncoder.encode(novaSenha);
+
+        usuario.alterarSenhaHash(novoHash);
+
+        usuarioRepository.save(usuario);
     }
 }

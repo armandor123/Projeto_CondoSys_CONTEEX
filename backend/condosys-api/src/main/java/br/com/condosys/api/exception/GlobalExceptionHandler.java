@@ -5,6 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import br.com.condosys.api.exception.EmailJaCadastradoException;
+import br.com.condosys.api.exception.PessoaJaPossuiUsuarioException;
+import br.com.condosys.api.exception.UsuarioNaoEncontradoException;
+
+
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,5 +66,56 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(erros);
+    }
+
+    // Usuário não encontrado -> 404.
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> tratarUsuarioNaoEncontrado(
+            UsuarioNaoEncontradoException exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "erro", exception.getMessage()
+                ));
+    }
+
+
+    // E-mail já utilizado -> 409.
+    @ExceptionHandler(EmailJaCadastradoException.class)
+    public ResponseEntity<Map<String, String>> tratarEmailDuplicado(
+            EmailJaCadastradoException exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "erro", exception.getMessage()
+                ));
+    }
+
+
+    // Pessoa já possui usuário -> 409.
+    @ExceptionHandler(PessoaJaPossuiUsuarioException.class)
+    public ResponseEntity<Map<String, String>> tratarPessoaComUsuario(
+            PessoaJaPossuiUsuarioException exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "erro", exception.getMessage()
+                ));
+    }
+
+    // Senha atual incorreta -> 400.
+    @ExceptionHandler(SenhaAtualIncorretaException.class)
+    public ResponseEntity<Map<String, String>> tratarSenhaIncorreta(
+            SenhaAtualIncorretaException exception
+    ) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "erro", exception.getMessage()
+                ));
     }
 }
